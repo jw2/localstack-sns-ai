@@ -1109,6 +1109,11 @@ def store_delivery_log(
         # check if topic has the right attribute and a role, otherwise return
         # TODO: on purpose not using walrus operator to show that we get the RoleArn here for CloudWatch
         role_arn = topic_attributes.get(topic_attribute)
+        if not role_arn and protocol == "lambda":
+            camel_attr = (
+                "LambdaSuccessFeedbackRoleArn" if success else "LambdaFailureFeedbackRoleArn"
+            )
+            role_arn = topic_attributes.get(camel_attr)
         if not role_arn:
             return
 
